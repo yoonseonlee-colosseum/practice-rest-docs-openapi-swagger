@@ -1,7 +1,8 @@
 package com.practice.practicerestdocs.infrastructure.web.product
 
+import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
 import com.practice.practicerestdocs.annotation.RestDocsTest
-import com.practice.practicerestdocs.application.ProductService
+import com.practice.practicerestdocs.application.product.ProductService
 import com.practice.practicerestdocs.common.util.JsonUtils
 import com.practice.practicerestdocs.config.Constant
 import com.practice.practicerestdocs.documenation.MockMvcFactory
@@ -13,10 +14,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
+import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 
@@ -84,10 +89,26 @@ class ProductRestControllerDocsTest {
                     .content(createCommandJson)
             )
             .andExpect(MockMvcResultMatchers.status().isCreated)
+            // REST Docs 용
             .andDo(
-                MockMvcFactory.document("products", requestFieldDescription, responseFieldDescription)
+                MockMvcRestDocumentation.document(
+                    "products",
+                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    requestFields(*requestFieldDescription),
+                    responseFields(*responseFieldDescription),
+                )
             )
-
+            // OAS 3.0 - Swagger
+            .andDo(
+                MockMvcRestDocumentationWrapper.document(
+                    "products",
+                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    requestFields(*requestFieldDescription),
+                    responseFields(*responseFieldDescription)
+                )
+            )
     }
 }
 

@@ -1,4 +1,4 @@
-package com.practice.practicerestdocs.application
+package com.practice.practicerestdocs.application.product
 
 import com.practice.practicerestdocs.domain.product.Product
 import com.practice.practicerestdocs.domain.product.ProductInfo

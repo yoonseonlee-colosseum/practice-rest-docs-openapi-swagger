@@ -1,0 +1,7 @@
+POST localhost:8080/orders
+Content-Type: application/json
+
+{
+  "memberNo": "MEMBER-1001",
+  "productIds": [1, 2]
+}

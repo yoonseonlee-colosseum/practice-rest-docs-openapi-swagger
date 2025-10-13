@@ -35,6 +35,27 @@ class GlobalRestControllerExceptionHandler {
     )
     protected fun badRequestHandle(exception: Exception): ApiResponse<Unit> {
         logger.info { "[BadRequest] ${exception.message}" }
+        when (exception) {
+            is MethodArgumentNotValidException -> {
+                exception.bindingResult.fieldErrors.forEach {
+                    logger.warn {
+                        "[ValidationError] field=${it.field}, value=${it.rejectedValue}, message=${it.defaultMessage}"
+                    }
+                }
+            }
+
+            is BindException -> {
+                exception.bindingResult.fieldErrors.forEach {
+                    logger.warn {
+                        "[BindError] field=${it.field}, value=${it.rejectedValue}, message=${it.defaultMessage}"
+                    }
+                }
+            }
+
+            else -> {
+                logger.warn { "[BadRequest:UnhandledType] ${exception.localizedMessage}" }
+            }
+        }
         return ApiResponseGenerator.fail(
             code = BusinessCode.BAD_REQUEST.code,
             message = BusinessCode.BAD_REQUEST.message,

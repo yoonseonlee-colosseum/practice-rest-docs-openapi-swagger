@@ -1,6 +1,6 @@
 package com.practice.practicerestdocs.infrastructure.web.product
 
-import com.practice.practicerestdocs.application.ProductService
+import com.practice.practicerestdocs.application.product.ProductService
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

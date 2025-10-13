@@ -1,5 +1,6 @@
 package com.practice.practicerestdocs.documenation
 
+import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
 import com.practice.practicerestdocs.common.util.JsonUtils
 import com.practice.practicerestdocs.common.util.LocalDateTimeUtils
 import com.practice.practicerestdocs.common.util.LocalDateUtils
@@ -40,7 +41,7 @@ object MockMvcFactory {
         return getMockMvcBuilder(*controllers).apply<StandaloneMockMvcBuilder>(documentationConfigurer).build()
     }
 
-    fun document(
+    fun docsDocument(
         snippetName: String,
         requestFieldDescription: Array<out FieldDescriptor>? = null,
         responseFieldDescription: Array<out FieldDescriptor>? = null,
@@ -73,6 +74,47 @@ object MockMvcFactory {
         }
 
         return MockMvcRestDocumentation.document(
+            snippetName,
+            Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+            Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+            requestFields(*requestFieldDescription),
+            responseFields(*responseFieldDescription),
+        )
+    }
+
+    fun swaggerDocument(
+        snippetName: String,
+        requestFieldDescription: Array<out FieldDescriptor>? = null,
+        responseFieldDescription: Array<out FieldDescriptor>? = null,
+    ): ResultHandler {
+
+        if (requestFieldDescription == null && responseFieldDescription == null) {
+            return MockMvcRestDocumentationWrapper.document(
+                snippetName,
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+            )
+        }
+
+        if (requestFieldDescription == null) {
+            return MockMvcRestDocumentationWrapper.document(
+                snippetName,
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                responseFields(*responseFieldDescription!!),
+            )
+        }
+
+        if (responseFieldDescription == null) {
+            return MockMvcRestDocumentationWrapper.document(
+                snippetName,
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                requestFields(*requestFieldDescription),
+            )
+        }
+
+        return MockMvcRestDocumentationWrapper.document(
             snippetName,
             Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
             Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),

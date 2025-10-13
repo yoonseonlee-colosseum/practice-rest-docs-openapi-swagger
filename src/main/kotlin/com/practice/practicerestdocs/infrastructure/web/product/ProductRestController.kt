@@ -1,6 +1,6 @@
 package com.practice.practicerestdocs.infrastructure.web.product
 
-import com.practice.practicerestdocs.application.ProductService
+import com.practice.practicerestdocs.application.product.ProductService
 import com.practice.practicerestdocs.domain.product.ProductInfo
 import com.practice.practicerestdocs.infrastructure.web.common.payload.ApiResponse
 import com.practice.practicerestdocs.infrastructure.web.common.payload.ApiResponseGenerator

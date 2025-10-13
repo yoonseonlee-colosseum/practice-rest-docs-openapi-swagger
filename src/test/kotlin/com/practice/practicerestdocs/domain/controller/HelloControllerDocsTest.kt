@@ -28,7 +28,7 @@ class HelloControllerDocsTest{
             )
             .andExpect(status().isOk)
             .andDo(
-                MockMvcFactory.document("hello")
+                MockMvcFactory.docsDocument("hello")
             )
     }
 
@@ -42,7 +42,7 @@ class HelloControllerDocsTest{
             )
             .andDo(ResponseStatusHandler(HttpStatus.UNAUTHORIZED))
             .andDo(
-                MockMvcFactory.document("hello")
+                MockMvcFactory.docsDocument("hello")
             )
     }
 }
