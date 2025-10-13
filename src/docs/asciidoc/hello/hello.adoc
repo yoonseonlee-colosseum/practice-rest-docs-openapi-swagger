@@ -1,0 +1,9 @@
+=== Hello
+
+요청 예시:
+
+include::{snippets}/hello/http-request.adoc[]
+
+응답 예시:
+
+include::{snippets}/hello/http-response.adoc[]

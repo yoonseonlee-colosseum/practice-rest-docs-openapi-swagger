@@ -1,0 +1,7 @@
+POST localhost:8080/products
+Content-Type: application/json
+
+{
+  "productName": "상품명",
+  "productNo": "1234"
+}
