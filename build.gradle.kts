@@ -1,4 +1,3 @@
-import org.asciidoctor.gradle.jvm.AsciidoctorTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -8,7 +7,6 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 
     // 문서화 관련
-    id("org.asciidoctor.jvm.convert") version "4.0.2"
     id("com.epages.restdocs-api-spec") version "0.19.2"
 }
 
@@ -32,8 +30,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -59,39 +55,22 @@ tasks.register<Test>("restDocsTest") {
     }
 
     // 테스트 후 문서화 태스크 자동 실행
-    finalizedBy("asciidoctor")
     finalizedBy("openapi3")
-}
-
-/** Asciidoctor 설정 */
-tasks.named<AsciidoctorTask>("asciidoctor") {
-    dependsOn(tasks.named("restDocsTest"))
-    inputs.dir(snippetsDir)
-
-    // Asciidoctor가 {snippets} 변수를 자동 인식하지 않으므로 직접 경로 지정
-    attributes(mapOf("snippets" to file("build/generated-snippets").path))
-
-    baseDirFollowsSourceDir()
 }
 
 /** Spring Boot Jar 빌드 설정 */
 tasks.named<BootJar>("bootJar") {
-    dependsOn("asciidoctor", "openapi3")
-
-    // REST Docs HTML 포함
-    from("build/docs/asciidoc/") {
-        into("BOOT-INF/classes/static/docs")
-    }
+    dependsOn("openapi3")
 
     // OpenAPI YAML 포함
     from("build/api-spec/") {
         include("openapi3.yaml")
-        into("BOOT-INF/classes/static/swagger")
+        into("BOOT-INF/classes/static/v3")
     }
 
     // Swagger UI 정적 리소스 포함 (프로젝트 루트에 swagger-ui 폴더 있을 경우)
     from("swagger-ui/") {
-        into("BOOT-INF/classes/static/swagger")
+        into("BOOT-INF/classes/static/swagger-ui")
     }
 
     archiveFileName.set("application.jar")
@@ -105,7 +84,7 @@ tasks.register<GradleBuild>("apiBuild") {
 openapi3 {
     setServer("http://localhost:8080")
     title = "spring-rest-docs-guide"
-    description = "Spring REST Docs 테스트 생성물 생성시 추가생성되는 OpenAPI 문서이용"
+    description = "Spring REST Docs 테스트 생성물 생성 시 추가 생성되는 OpenAPI 문서이용"
     version = "${project.version}"
     format = "yaml"
 }

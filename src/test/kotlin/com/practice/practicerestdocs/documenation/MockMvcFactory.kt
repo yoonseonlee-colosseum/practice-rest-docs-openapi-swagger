@@ -1,6 +1,5 @@
 package com.practice.practicerestdocs.documenation
 
-import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
 import com.practice.practicerestdocs.common.util.JsonUtils
 import com.practice.practicerestdocs.common.util.LocalDateTimeUtils
 import com.practice.practicerestdocs.common.util.LocalDateUtils
@@ -11,12 +10,7 @@ import org.springframework.format.support.DefaultFormattingConversionService
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.operation.preprocess.Preprocessors
-import org.springframework.restdocs.payload.FieldDescriptor
-import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
-import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultHandler
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 import org.springframework.web.filter.CharacterEncodingFilter
@@ -38,91 +32,10 @@ object MockMvcFactory {
 
         documentationConfigurer.uris().withScheme("https").withHost(host).withPort(443)
 
-        return getMockMvcBuilder(*controllers).apply<StandaloneMockMvcBuilder>(documentationConfigurer).build()
+        return getMockMvcBuilder(*controllers)
+            .apply<StandaloneMockMvcBuilder>(documentationConfigurer)
+            .build()
     }
-
-    fun docsDocument(
-        snippetName: String,
-        requestFieldDescription: Array<out FieldDescriptor>? = null,
-        responseFieldDescription: Array<out FieldDescriptor>? = null,
-    ): ResultHandler {
-
-        if (requestFieldDescription == null && responseFieldDescription == null) {
-            return MockMvcRestDocumentation.document(
-                snippetName,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-            )
-        }
-
-        if (requestFieldDescription == null) {
-            return MockMvcRestDocumentation.document(
-                snippetName,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                responseFields(*responseFieldDescription!!),
-            )
-        }
-
-        if (responseFieldDescription == null) {
-            return MockMvcRestDocumentation.document(
-                snippetName,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                requestFields(*requestFieldDescription),
-            )
-        }
-
-        return MockMvcRestDocumentation.document(
-            snippetName,
-            Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-            Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-            requestFields(*requestFieldDescription),
-            responseFields(*responseFieldDescription),
-        )
-    }
-
-    fun swaggerDocument(
-        snippetName: String,
-        requestFieldDescription: Array<out FieldDescriptor>? = null,
-        responseFieldDescription: Array<out FieldDescriptor>? = null,
-    ): ResultHandler {
-
-        if (requestFieldDescription == null && responseFieldDescription == null) {
-            return MockMvcRestDocumentationWrapper.document(
-                snippetName,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-            )
-        }
-
-        if (requestFieldDescription == null) {
-            return MockMvcRestDocumentationWrapper.document(
-                snippetName,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                responseFields(*responseFieldDescription!!),
-            )
-        }
-
-        if (responseFieldDescription == null) {
-            return MockMvcRestDocumentationWrapper.document(
-                snippetName,
-                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                requestFields(*requestFieldDescription),
-            )
-        }
-
-        return MockMvcRestDocumentationWrapper.document(
-            snippetName,
-            Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-            Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-            requestFields(*requestFieldDescription),
-            responseFields(*responseFieldDescription),
-        )
-    }
-
 
     fun getMockMvc(vararg controllers: Any): MockMvc =
         getMockMvcBuilder(*controllers).build()
